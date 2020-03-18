@@ -1,34 +1,37 @@
 package com.example.benzinpreise;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
-import android.widget.TextView;
-
+import android.util.Log;
+import android.widget.Toast;
+import com.example.benzinpreise.apiRequest.Tankstellen;
+import com.example.benzinpreise.apiRequest.TankstellenApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.transform.Result;
-
 import retrofit2.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView textViewResult;
-    private List<Tankstellen> tankstellenList = null;
+
+    RecyclerView recyclerView;
+    List<Station> tanktsellenList;
+    Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textViewResult =findViewById(R.id.text_view_result);
+
+
+        recyclerView = findViewById(R.id.stationsList);
+        tanktsellenList = new ArrayList<>();
         getTankstellen();
+
 
     }
 
@@ -48,43 +51,39 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Tankstellen> call, Response<Tankstellen> response) {
 
-                    String displayResponse = "";
-                    Tankstellen antwort = response.body();
-                    List<Tankstellen.Stations> petrolStation = antwort.stations;
+                Tankstellen antwort = response.body();
+                List<Tankstellen.Stations> petrolStation = antwort.stations;
 
+                for(Tankstellen.Stations stationen : petrolStation) {
 
-                    displayResponse += "ok: " +antwort.isOk() +"\n" + "license: "+antwort.getLicense() +"\n"+ "data: "+antwort.getData() +"\n"+ "status: "+antwort.getStatus() +"\n";
+                    Station tankstelle = new Station();
+                    tankstelle.setName(stationen.getName());
+                    tankstelle.setBrand(stationen.getBrand());
+                    tankstelle.setStreet(stationen.getStreet());
+                    tankstelle.setPlace(stationen.getPlace());
+                    tankstelle.setLat(stationen.getLat());
+                    tankstelle.setLng(stationen.getLng());
+                    tankstelle.setDist(stationen.getDist());
+                    tankstelle.setDiesel(stationen.getDiesel());
+                    tankstelle.setE5(stationen.getE5());
+                    tankstelle.setE10(stationen.getE10());
+                    tankstelle.setOpen(stationen.isOpen());
+                    tankstelle.setHouseNumber(stationen.getHouseNumber());
+                    tankstelle.setPostCode(stationen.getPostCode());
+                    tanktsellenList.add(tankstelle);
 
-                    int i =1;
-                    for(Tankstellen.Stations stationen : petrolStation){
-                        displayResponse +=  "\n"
-                                + "Tankstelle " + i + " \n"
-                                + "id: " + stationen.id + " \n"
-                                + "name: " +  stationen.name + " \n"
-                                + "brand: " +  stationen.brand + " \n"
-                                + "street: " +  stationen.street + " \n"
-                                + "place: " +  stationen.place + " \n"
-                                + "lat: " +  stationen.lat + "\n "
-                                + "lng: " +  stationen.lng + " \n"
-                                + "dist: " +  stationen.dist + " \n"
-                                + "diesel: " +  stationen.diesel + " \n"
-                                + "e5: " +  stationen.e5 + " \n"
-                                + "e10: " +  stationen.e10 + " \n"
-                                + "isOpen: " +  stationen.isOpen + " \n"
-                                + "houseNumber: " +  stationen.houseNumber + " \n"
-                                + "postCode: " +  stationen.postCode+" \n"
-                                + "\n";
-                        i++;
-                    }
-                    textViewResult.setText(displayResponse);
+                    Log.d("Inhalt von getName: ", tankstelle.getName());
+                }
 
-
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                adapter = new Adapter(getApplicationContext(), tanktsellenList);
+                recyclerView.setAdapter(adapter);
 
             }
 
             @Override
             public void onFailure(Call<Tankstellen> call, Throwable t) {
-                textViewResult.setText(t.getMessage());
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
