@@ -10,16 +10,17 @@ public class Station {
         private double lat;
         private double lng;
         private double dist;
-        private double diesel;
-        private double e5;
-        private double e10;
+        private String diesel;
+        private String e5;
+        private String e10;
         private boolean isOpen;
         private String houseNumber;
         private int postCode;
+        private boolean expand;
 
         public Station(){}
 
-        public Station (String name, String brand, String place, double dist, double diesel, double e10, double e5, boolean isOpen){
+        public Station (String name, String brand, String place, double dist, String diesel, String e10, String e5, boolean isOpen, boolean expand){
             this.name = name;
             this.brand = brand;
             this.place = place;
@@ -28,6 +29,7 @@ public class Station {
             this.e10 = e10;
             this.e5 = e5;
             this.isOpen = isOpen;
+            this.expand = false;
         }
 
 
@@ -63,15 +65,15 @@ public class Station {
             return dist;
         }
 
-        public double getDiesel() {
+        public String getDiesel() {
             return diesel;
         }
 
-        public double getE5() {
+        public String getE5() {
             return e5;
         }
 
-        public double getE10() {
+        public String getE10() {
             return e10;
         }
 
@@ -119,15 +121,15 @@ public class Station {
             this.dist = dist;
         }
 
-        public void setDiesel(double diesel) {
+        public void setDiesel(String diesel) {
             this.diesel = diesel;
         }
 
-        public void setE5(double e5) {
+        public void setE5(String e5) {
             this.e5 = e5;
         }
 
-        public void setE10(double e10) {
+        public void setE10(String e10) {
             this.e10 = e10;
         }
 
@@ -142,5 +144,13 @@ public class Station {
         public void setPostCode(int postCode) {
             this.postCode = postCode;
         }
-    }
+
+        public boolean isExpand() {
+            return expand;
+        }
+
+        public void setExpand(boolean expand) {
+            this.expand = expand;
+        }
+}
 

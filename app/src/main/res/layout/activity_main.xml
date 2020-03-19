@@ -7,27 +7,61 @@
     android:padding="8dp"
     tools:context=".MainActivity">
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        style="@style/Widget.AppCompat.SeekBar"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/radiusTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:max="25"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:padding="16dp"
+        android:text="Radius in dem nach Tankstellen gesucht werden soll: "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="242dp"
+        android:layout_height="13dp"
+        android:padding="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:max="25"
+        app:layout_constraintEnd_toStartOf="@+id/radiusZahl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radiusTextView" />
+
+    <TextView
+        android:id="@+id/radiusZahl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="0 km"
+        app:layout_constraintTop_toBottomOf="@+id/stationsList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/seekBar"
+        app:layout_constraintTop_toTopOf="@+id/seekBar" />
+
+    <Button
+        android:id="@+id/suchenButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Suchen"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekBar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stationsList"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+        app:layout_constraintTop_toBottomOf="@+id/suchenButton" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

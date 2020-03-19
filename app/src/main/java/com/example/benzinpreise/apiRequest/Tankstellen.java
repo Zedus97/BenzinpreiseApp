@@ -1,9 +1,7 @@
 package com.example.benzinpreise.apiRequest;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Tankstellen {
@@ -33,11 +31,11 @@ public class Tankstellen {
         @SerializedName("dist")
         private double dist;
         @SerializedName("diesel")
-        private double diesel;
+        private String diesel;
         @SerializedName("e5")
-        private double e5;
+        private String e5;
         @SerializedName("e10")
-        private double e10;
+        private String e10;
         @SerializedName("isOpen")
         private boolean isOpen;
         @SerializedName("houseNumber")
@@ -78,15 +76,15 @@ public class Tankstellen {
             return dist;
         }
 
-        public double getDiesel() {
+        public String getDiesel() {
             return diesel;
         }
 
-        public double getE5() {
+        public String getE5() {
             return e5;
         }
 
-        public double getE10() {
+        public String getE10() {
             return e10;
         }
 
@@ -134,15 +132,15 @@ public class Tankstellen {
             this.dist = dist;
         }
 
-        public void setDiesel(double diesel) {
+        public void setDiesel(String diesel) {
             this.diesel = diesel;
         }
 
-        public void setE5(double e5) {
+        public void setE5(String e5) {
             this.e5 = e5;
         }
 
-        public void setE10(double e10) {
+        public void setE10(String e10) {
             this.e10 = e10;
         }
 

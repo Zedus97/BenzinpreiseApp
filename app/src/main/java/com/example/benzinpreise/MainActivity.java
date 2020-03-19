@@ -1,17 +1,32 @@
 package com.example.benzinpreise;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.benzinpreise.Location.LocationFinder;
 import com.example.benzinpreise.apiRequest.Tankstellen;
 import com.example.benzinpreise.apiRequest.TankstellenApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -21,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     List<Station> tanktsellenList;
     Adapter adapter;
+    SeekBar radiusSeekBar;
+    TextView radiusTextView;
+    Button suchen;
+    double lat;
+    double lng;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +51,61 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.stationsList);
         tanktsellenList = new ArrayList<>();
-        getTankstellen();
 
+
+        radiusSeekBar = findViewById(R.id.seekBar);
+        radiusTextView = findViewById(R.id.radiusZahl);
+        suchen = findViewById(R.id.suchenButton);
+        radiusSeekBar.setProgress(7);
+        radiusTextView.setText(String.valueOf(radiusSeekBar.getProgress() + " km"));
+
+        LocationFinder finder;
+        lat=0.0;
+        lng = 0.0;
+        finder = new LocationFinder(this);
+        if(finder.canGetLocation()){
+            lat = finder.getLatitude();
+            lng = finder.getLongitude();
+        }else{
+            finder.showSettingsAlert();
+        }
+
+
+        radiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                radiusTextView.setText(String.valueOf(progress + " km"));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        String radius = String.valueOf(radiusSeekBar.getProgress());
+
+        getTankstellen(radius);
+
+        suchen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String radius = String.valueOf(radiusSeekBar.getProgress());
+                String lat = String.valueOf(finder.getLatitude());
+                String lng = String.valueOf(finder.getLongitude());
+                adapter.clearList();
+                getTankstellen(radius);
+
+            }
+        });
 
     }
 
-    private void getTankstellen(){
+    private void getTankstellen(String radius){
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -46,10 +116,13 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         TankstellenApi tankstellenApi = retrofit.create(TankstellenApi.class);
-        Call<Tankstellen> call = tankstellenApi.getTankstellen("52.318","10.007","7","all","dist",TankstellenApi.API_KEY);
+
+        Call<Tankstellen> call = tankstellenApi.getTankstellen("52.318","10.007",radius,"all","dist",TankstellenApi.API_KEY);
         call.enqueue(new Callback<Tankstellen>() {
             @Override
             public void onResponse(Call<Tankstellen> call, Response<Tankstellen> response) {
+
+
 
                 Tankstellen antwort = response.body();
                 List<Tankstellen.Stations> petrolStation = antwort.stations;
@@ -72,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                     tankstelle.setPostCode(stationen.getPostCode());
                     tanktsellenList.add(tankstelle);
 
-                    Log.d("Inhalt von getName: ", tankstelle.getName());
                 }
 
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -87,5 +159,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }
