@@ -19,4 +19,12 @@ public interface TankstellenApi {
                                       @Query("sort") String filter,
                                       @Query("apikey") String apikey);
 
+    @GET("json/list.php")
+    Call<TankstellenPreis> getTankstellenPreis(@Query("lat") String lat,
+                                               @Query("lng") String lng,
+                                               @Query("rad") String umkreis,
+                                               @Query("type") String type,
+                                               @Query("sort") String filter,
+                                               @Query("apikey") String apikey);
+
 }

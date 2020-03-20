@@ -4,16 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Tankstellen {
+public class TankstellenPreis {
 
     private boolean ok;
     private String license;
     private String data;
     private String status;
     @SerializedName("stations")
-    public List <Stations> stations;
+    public List<Stations> stationsPreis;
 
-    public class Stations{
+    public class Stations {
         @SerializedName("id")
         private String id;
         @SerializedName("name")
@@ -32,12 +32,6 @@ public class Tankstellen {
         private double dist;
         @SerializedName("price")
         private String price;
-        @SerializedName("diesel")
-        private String diesel;
-        @SerializedName("e5")
-        private String e5;
-        @SerializedName("e10")
-        private String e10;
         @SerializedName("isOpen")
         private boolean isOpen;
         @SerializedName("houseNumber")
@@ -48,6 +42,7 @@ public class Tankstellen {
         public String getPrice() {
             return price;
         }
+
         public String getId() {
             return id;
         }
@@ -78,18 +73,6 @@ public class Tankstellen {
 
         public double getDist() {
             return dist;
-        }
-
-        public String getDiesel() {
-            return diesel;
-        }
-
-        public String getE5() {
-            return e5;
-        }
-
-        public String getE10() {
-            return e10;
         }
 
         public boolean isOpen() {

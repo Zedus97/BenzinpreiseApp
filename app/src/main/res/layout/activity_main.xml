@@ -11,24 +11,27 @@
         android:id="@+id/radiusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
         android:padding="16dp"
         android:text="Radius in dem nach Tankstellen gesucht werden soll: "
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:id="@+id/seekBar"
-        style="@style/Widget.AppCompat.SeekBar"
+        style="@android:style/Widget.Material.SeekBar"
         android:layout_width="242dp"
         android:layout_height="13dp"
-        android:padding="16dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:max="25"
+        android:layout_marginTop="24dp"
+        android:max="26"
+        android:min="1"
+        android:padding="16dp"
         app:layout_constraintEnd_toStartOf="@+id/radiusZahl"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/radiusTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/radiusTextView" />
 
     <TextView
         android:id="@+id/radiusZahl"
@@ -36,31 +39,79 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="0 km"
-        app:layout_constraintTop_toBottomOf="@+id/stationsList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/seekBar"
         app:layout_constraintTop_toTopOf="@+id/seekBar" />
+
+    <TextView
+        android:id="@+id/benzinArt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Nach welchem Kraftstoff soll gesucht werden"
+        app:layout_constraintBottom_toTopOf="@+id/radioButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/suchenButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar">
+
+        <RadioButton
+            android:id="@+id/all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="Alle" />
+
+        <RadioButton
+            android:id="@+id/dieselBenzin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="Diesel" />
+
+        <RadioButton
+            android:id="@+id/superBenzin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="Super" />
+
+        <RadioButton
+            android:id="@+id/e10Benzin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="Super E10" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/suchenButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Suchen"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:text="Umskreis-suche"
+        app:layout_constraintBottom_toTopOf="@+id/preisSuche"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/seekBar" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/stationsList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+    <Button
+        android:id="@+id/preisSuche"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Günstigsten Preis finden"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/suchenButton" />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 

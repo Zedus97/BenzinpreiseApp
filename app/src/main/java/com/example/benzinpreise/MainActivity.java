@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -32,14 +33,13 @@ import retrofit2.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements LocationListener{
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
-    RecyclerView recyclerView;
-    List<Station> tanktsellenList;
-    Adapter adapter;
+
     SeekBar radiusSeekBar;
     TextView radiusTextView;
     Button suchen;
+    Button preis;
     double lat;
     double lng;
     LocationManager locationManager;
@@ -51,39 +51,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         setContentView(R.layout.activity_main);
 
 
-        recyclerView = findViewById(R.id.stationsList);
-        tanktsellenList = new ArrayList<>();
-
-
         //get Current Location
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
-        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         onLocationChanged(location);
-
 
 
         //Seekbar
         radiusSeekBar = findViewById(R.id.seekBar);
         radiusTextView = findViewById(R.id.radiusZahl);
         suchen = findViewById(R.id.suchenButton);
+        preis = findViewById(R.id.preisSuche);
         radiusSeekBar.setProgress(7);
-        radiusTextView.setText(String.valueOf(radiusSeekBar.getProgress() + " km"));
+        radiusTextView.setText(radiusSeekBar.getProgress() + " km");
 
         radiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                radiusTextView.setText(String.valueOf(progress + " km"));
+                radiusTextView.setText(progress + " km");
             }
 
             @Override
@@ -100,79 +90,36 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         //Get Radius from seekbar and set it to radius as a String
         String radius = String.valueOf(radiusSeekBar.getProgress());
         //Get Tankstellen with the radius from the Seekbar
-        getTankstellen(radius, String.valueOf(lat), String.valueOf(lng));
 
 
         //If Button is Clicked
         suchen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String radius = String.valueOf(radiusSeekBar.getProgress());
-                adapter.clearList();
-
-                getTankstellen(radius, String.valueOf(lat), String.valueOf(lng));
-
-            }
-        });
-
-    }
-
-    private void getTankstellen(String radius, String lat, String lng){
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(TankstellenApi.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        TankstellenApi tankstellenApi = retrofit.create(TankstellenApi.class);
-
-        Call<Tankstellen> call = tankstellenApi.getTankstellen(lat,lng,radius,"all","dist",TankstellenApi.API_KEY);
-        call.enqueue(new Callback<Tankstellen>() {
-            @Override
-            public void onResponse(Call<Tankstellen> call, Response<Tankstellen> response) {
-
-
-
-                Tankstellen antwort = response.body();
-                List<Tankstellen.Stations> petrolStation = antwort.stations;
-
-                for(Tankstellen.Stations stationen : petrolStation) {
-
-                    Station tankstelle = new Station();
-                    tankstelle.setName(stationen.getName());
-                    tankstelle.setBrand(stationen.getBrand());
-                    tankstelle.setStreet(stationen.getStreet());
-                    tankstelle.setPlace(stationen.getPlace());
-                    tankstelle.setLat(stationen.getLat());
-                    tankstelle.setLng(stationen.getLng());
-                    tankstelle.setDist(stationen.getDist());
-                    tankstelle.setDiesel(stationen.getDiesel());
-                    tankstelle.setE5(stationen.getE5());
-                    tankstelle.setE10(stationen.getE10());
-                    tankstelle.setOpen(stationen.isOpen());
-                    tankstelle.setHouseNumber(stationen.getHouseNumber());
-                    tankstelle.setPostCode(stationen.getPostCode());
-                    tanktsellenList.add(tankstelle);
-
+                openUmkreisActivity();
+                /*
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
                 }
-
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                adapter = new Adapter(getApplicationContext(), tanktsellenList);
-                recyclerView.setAdapter(adapter);
-
-            }
-
-            @Override
-            public void onFailure(Call<Tankstellen> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                onLocationChanged(location1);
+                */
             }
         });
-    }
 
-    public void getTanktsellenPreis (){
+        preis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPreisActivity();
+                /*
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                onLocationChanged(location1);
+                */
+            }
+        });
 
     }
 
@@ -194,6 +141,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    private void openUmkreisActivity() {
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@", String.valueOf(radiusSeekBar.getProgress()));
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@", String.valueOf(lat));
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@", String.valueOf(lng));
+        Intent intent = new Intent(this, Umkreis.class);
+        intent.putExtra("lat", String.valueOf(lat));
+        intent.putExtra("lng", String.valueOf(lng));
+        intent.putExtra("umkreis", String.valueOf(radiusSeekBar.getProgress()));
+        startActivity(intent);
+
+    }
+
+    private void openPreisActivity() {
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@", String.valueOf(radiusSeekBar.getProgress()));
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@", String.valueOf(lat));
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@", String.valueOf(lng));
+        Intent intent = new Intent(this, Preis.class);
+        intent.putExtra("lat", String.valueOf(lat));
+        intent.putExtra("lng", String.valueOf(lng));
+        intent.putExtra("umkreis", String.valueOf(radiusSeekBar.getProgress()));
+        startActivity(intent);
 
     }
 }
